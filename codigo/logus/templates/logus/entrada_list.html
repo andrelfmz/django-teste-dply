@@ -1,0 +1,60 @@
+{% extends "logus/base.html" %}
+{% load humanize %}
+
+{% block title %}{% endblock %}
+
+{% block post_detail_link %}
+	{{ block.super }} » <a class='breadcrumb-item' href='{% url "entrada-lista" %}'>Entradas</a>
+	<!--{{ block.super }} » <a href='{% url "entrada-lista" %}'>Entradas</a>-->
+{% endblock %}
+
+
+{% block content %}
+ 
+	<div class="row">
+		<div class="col-sm-4">
+			<div class="col-lg text-left">
+				<a href="{% url 'entrada-add' %}" class="btn btn-success">
+					<span class="glyphicon glyphicon-plus-sign"></span> Adicionar Nova Entrada
+				</a>
+			</div>
+		</div>
+        
+        <div class="col-sm-8">
+            <div class="input-group text-rigth">
+                <span class="input-group-addon">
+                    <i class="glyphicon glyphicon-search"></i>
+                </span>
+                <div class="form-line">
+                    <input type="text" id="search-bar2" class="form-control line-input" placeholder="Buscar...digite aqui... e pressione <Enter>">
+                </div>
+            </div>
+        </div> 
+
+
+       
+
+    </div>
+
+    <br>
+
+    <div class="table-responsive">
+	    <form method="post" action=""> {% csrf_token %}
+	        <table id="lista-database2" class="table table-striped table-bordered table-condensed" value="entradas:ed">
+	        	<thead>
+	        		<tr>
+	        			<th id="campo1" value="id">#</th>
+	        			<th id="campo2" value="fornecedor">Fornecedor</th>
+	        			<th id="campo3" value="valortotal">Valor total</th>
+	        			<th id="campo4" value="data">Data</th>
+	        			<th>Ações</th>	        			
+	        		</tr>
+	        	</thead>	        	
+	        	<tfoot>
+                    
+                </tfoot>
+	        </table>
+	    </form>
+	</div>
+
+{% endblock %}

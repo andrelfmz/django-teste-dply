@@ -1,0 +1,118 @@
+{% load staticfiles %}
+
+<html>
+    <head>
+        {% block cabecalho %}
+        <title>Sistema LOGUS</title>
+        {% endblock %}
+
+        <!-- Icone padrao da pagina -->
+        <link rel="shortcut icon" href="{% static '/favicon/favicon.ico' %}"/>
+
+        <!-- Biblioteca do JQuery Mínimo externamente - OBS: TEM QUER VIR PRIMEIRO QUE O BOOTSTRAP
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> -->
+        <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script> 
+        
+
+        <!-- BootStrap 3.3.7 -->
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script> 
+
+     
+        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.11/jquery.mask.min.js"></script> -->
+
+        <!-- CSS -->
+        <!-- CSS - Padrao -->
+        <link href="{% static 'css/style.css' %}" rel="stylesheet"> 
+
+        <!-- CSS - DataTables >
+        <link href="{% static 'css/jquery.dataTables.min.css' %}" rel="stylesheet">
+        <link href="{% static 'css/scroller.dataTables.min.css' %}" rel="stylesheet"-->
+
+
+        <!-- Biblioteca do JQuery para Máscara MaskMoney -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-maskmoney/3.0.2/jquery.maskMoney.min.js"></script>
+
+        
+        {% block scripts_adicionais %}  
+
+        {% endblock %}
+
+
+    </head>
+
+    <body>
+ 
+        <!-- SE USUÁRIO AUTENTICADO -->
+        {% if request.user.is_authenticated %}
+
+            <!-- MENU -->
+            <div class='container'> 
+                {% include "logus/menu.html" %}
+            </div>
+            
+           
+            <!-- Breadcrumb -->
+            <div class='container-fluid' > 
+                <ol class="breadcrumb">
+                    <li><a href='{% url "home" %}'>Home</a>
+                        {% block post_detail_link %}
+
+                        {% endblock %}         
+                    </li>
+                </ol>
+            </div>
+            
+        {%endif%}
+
+ 
+        <!-- CONTEUDO -->
+        <div class="content container">    
+
+            <!-- Messagem de Permissão Negada -->
+            {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <div class="alert alert-danger">             
+                        <strong{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</strong>
+                        <p></p>                        
+                        <p></p>
+                        <a href="javascript:history.back()" class="btn btn-danger">
+                            <span class="glyphicon glyphicon-circle-arrow-left"></span> Retornar
+                        </a>
+                    </div>
+                {% endfor %}
+            </ul>
+            {% endif %}
+
+
+            {% block content %}
+            
+            {% endblock %}          
+        </div>
+
+
+        <!-- Datatables Js -->
+        <script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+        <script src="{% static 'js/dataTables.scroller.min.js' %}"></script>
+        <script src="{% static 'js/input.js' %}"></script>
+
+        
+        
+        <!-- Formset -->
+        <script src="{% static 'formset/jquery.formset.js' %}"></script>  
+        
+        <!-- Logus Java Script -->
+        <script src="{% static 'js/admin.js' %}"></script>
+
+        {% block js %}
+        
+        {% endblock %}
+
+    </body>
+</html>

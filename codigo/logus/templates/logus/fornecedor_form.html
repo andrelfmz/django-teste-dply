@@ -1,0 +1,42 @@
+{% extends "logus/fornecedor_list.html" %}
+{% load static %}
+
+
+{% block post_detail_link %}
+        
+    {% if object %}         
+        {{ block.super }} » <span class="breadcrumb-item active">Alterando ({{object.pk}})</span>
+    {% else %}
+        {{ block.super }} » <span class="breadcrumb-item active">Adicionar</span>
+    {% endif %}
+
+{% endblock %}
+
+
+{% block title %}{% endblock %}
+{% block content %}
+
+            <h4>Fornecedor {% if object %}({{object.pk}}){% endif %}</h4>
+            <hr>
+
+            <div class="col-md-0">
+                <form action="" method="post">{% csrf_token %}
+                    {{ form.errors }}
+                    {{ form.as_p }}
+
+                    <button type="submit" class="btn btn-success">
+                        <span class="glyphicon glyphicon-ok"></span> Gravar
+                    </button>       
+                    <!--<input class="btn btn-success" type="submit" value="Gravar"/>-->
+                    
+                    <!--a href="{% url 'fornecedor-lista' %}" class="btn btn-danger"-->
+                    <a href="javascript:history.back()" class="btn btn-danger">
+                        <span class="glyphicon glyphicon-circle-arrow-left"></span> Retornar
+                    </a>
+               
+                </form>
+            </div>
+        </div>
+
+
+{% endblock %}

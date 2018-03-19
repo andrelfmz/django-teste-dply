@@ -1,0 +1,91 @@
+{% extends "logus/base.html" %}
+{% load humanize %}
+
+{% block title %}{% endblock %}
+
+{% block post_detail_link %}
+    {{ block.super }} » <a class='breadcrumb-item' href='{% url "produto-lista" %}'>Produtos</a>
+    <!--{{ block.super }} » <a href='{% url "entrada-lista" %}'>Entradas</a>-->
+{% endblock %}
+
+
+{% block content %}
+        
+    <div class="row">
+        <div class="col-sm-8">
+            <form class="input-group" action="." method="get">            
+            <input type="text" name="q" class="form-control" placeholder="Digite o Nome do Produto...">
+            <span class="input-group-btn">
+                <button class="btn btn-primary" type="submit">
+                <span class="glyphicon glyphicon-search"></span> Pesquisar
+                    </button>
+            </span>
+        </form>
+        </div>
+ 
+        <div class="col-sm-4">
+            <h5>{{ object_list|length }} produto{{ object_list|length|pluralize }}
+                (<b>Total:</b> {{ page_obj.paginator.count }} produto{{ page_obj.paginator.count|pluralize }})
+            </h5>
+        </div>
+    </div>
+
+    <div class="col-lg text-left">
+        <a href="{% url 'produto-add' %}" class="btn btn-success">
+            <span class="glyphicon glyphicon-plus-sign"></span> Adicionar Novo Produto
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <form method="post" action=""> {% csrf_token %}
+            <table class="table table-striped table-bordered table-condensed table-list-search sortable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Produto</th>
+                        <th>Valor</th>
+                        <th>Estoque</th>
+                        <th class="sorttable_nosort"><span class="glyphicon glyphicon-edit"></span></th>
+                        <th class="sorttable_nosort"><span class="glyphicon glyphicon-minus-sign"></span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for dado in dados %}
+                        <tr>
+                            <td>{{dado.pk}}</td>
+                            <td><a href="{% url 'produto-update' dado.pk %}">{{dado.descricao}}</a></td>
+                            <td style="text-align: right"> {{dado.valor|floatformat:2|intcomma}}</td>
+                            <td style="text-align: right"> {{dado.estoque|floatformat:3|intcomma}}</td>                
+                            <td>
+                                <div class="btn-group btn-group btn-group-xs">
+                                    <a href="{% url 'produto-update' dado.pk %}" class="btn btn-primary btn-group-sm skill-button-in-table">
+                                        <span class="glyphicon glyphicon-edit"></span> Alterar
+                                    </a>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group btn-group-xs">
+                                    <a href="{% url 'produto-delete' dado.pk %}" class="btn btn-danger">
+                                        <span class="glyphicon glyphicon-minus-sign"></span> Excluir
+                                    </a>
+                                </div>
+                            </td>
+
+                        </tr>
+                    {% empty %}
+                        <div class="alert alert-warning" role="alert">
+                            Nenhum resultado foi encotrado.
+                        </div>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </form>
+    </div>
+
+    {% if object_list %}
+        <!-- paginação -->
+        {% include "logus/pagination2.html" %}
+    {% endif %}
+
+
+{% endblock %}

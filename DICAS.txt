@@ -1,0 +1,23 @@
+# DEPLOY
+  - Copiar todo codigo fonte da pasta ~/djangodev/logusweb para ./codigo
+  - Editar arquivo ./codigo/logusweb/settings.py
+    - Mudar host do banco de dados para: db (link container postgres)
+    - Remover comentario da linha STATIC_ROOT
+  - Rodar: ./logus
+
+
+
+# ENTRAR NO BASH DO CONTAINER
+  - docker ps 
+    (pegar ID do container)
+  - docker exec -it 987c39189286 /bin/bash
+    (exit para sair)
+
+
+# Medir a performance do Site (Ferramenta ApacheBench ou AB)
+  - apt-get install apache2-utils
+
+  - ab -c 10 -n 1000 http://127.0.0.1:8000/static/favicon/favicon.ico
+
+    -c = numero de conexoes
+    -n = numero de requisicoes

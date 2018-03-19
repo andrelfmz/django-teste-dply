@@ -1,0 +1,9 @@
+Django
+psycopg2
+psycopg2-binary
+django-autocomplete-light
+djangorestframework
+six
+django-model-utils
+gunicorn
+whitenoise

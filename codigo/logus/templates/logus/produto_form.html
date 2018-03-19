@@ -1,0 +1,37 @@
+{% extends "logus/produto_list.html" %}
+{% load static %}
+
+
+{% block post_detail_link %}
+        
+    {% if object %}         
+        {{ block.super }} » <span class="breadcrumb-item active">Alterando ({{object.pk}})</span>
+    {% else %}
+        {{ block.super }} » <span class="breadcrumb-item active">Adicionar</span>
+    {% endif %}
+
+{% endblock %}
+
+
+{% block title %}{% endblock %}
+{% block content %}
+    <h4>Produto {% if object %}({{object.pk}}){% endif %}</h4>
+    <hr>
+
+    <div class="col-md-0">
+        <form action="" method="post">{% csrf_token %}
+            {{ form.errors }}
+            {{ form.as_p }}
+
+            <button type="submit" class="btn btn-success">
+                <i class="glyphicon glyphicon-ok"></i> Gravar
+            </button>       
+            <!--<input class="btn btn-success" type="submit" value="Gravar"/>-->
+            
+            <a href="{% url 'produto-lista' %}" class="btn btn-danger">
+                <span class="glyphicon glyphicon-remove"></span> Retornar
+            </a>
+       
+        </form>
+    </div>
+{% endblock %}

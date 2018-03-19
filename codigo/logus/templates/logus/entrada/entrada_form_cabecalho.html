@@ -1,0 +1,33 @@
+<div class="col-sm-6">
+  <div class="form-group">
+    <label>{{form.fornecedor.label}}</label>
+      {% if form.fornecedor.errors %}<label class="error">{% for error in form.fornecedor.errors %}{{error}}{% endfor %}</label>{% endif %}
+    <div class="input-group">      
+        {{form.fornecedor}}      
+        <a title="Adicionar novo fornecedor" class="btn btn-success" onclick="window.open('{% url 'fornecedor-add' %}','popup','width=600,height=600,scrollbars=no,resizable=no'); return false;">
+            <span class="glyphicon glyphicon-plus-sign"/>                        
+        </a>
+    </div>
+  </div>
+</div>
+
+
+<div class="col-sm-6">
+  <div class="form-group">
+    <div class="form-line">
+      <label>{{form.data.label}}</label><strong style="color:red;"> *</strong>
+      {% if form.data.errors %}<label class="error">{% for error in form.data.errors %}{{error}}{% endfor %}</label>{% endif %}
+      {{form.data}}
+    </div>
+  </div>
+</div>
+
+<div class="col-sm-6">
+  <div class="form-group">
+    <div class="form-line">
+      <label>{{form.valortotal.label}}</label><strong style="color:red;"> *</strong>
+      {% if form.valortotal.errors %}<label class="error">{% for error in form.valortotal.errors %}{{error}}{% endfor %}</label>{% endif %}
+      {{form.valortotal}}
+    </div>
+  </div>
+</div>

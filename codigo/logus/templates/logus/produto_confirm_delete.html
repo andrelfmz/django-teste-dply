@@ -1,0 +1,15 @@
+
+{% extends "logus/base.html" %}
+
+{% block title %}{% endblock %}
+{% block content %}
+    <br><br>
+    <h2></h2>
+    <hr>
+    <div>
+        <form action="" method="post">{% csrf_token %}
+            <p>Tem certeza de que deseja excluir o Produto: <b>{{ object }}</b>?</p>
+            <input type="submit" value="Confirmar"/>
+        </form>
+    </div>
+{% endblock %}

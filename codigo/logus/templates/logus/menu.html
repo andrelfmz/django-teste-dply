@@ -1,0 +1,70 @@
+{% load staticfiles %}
+
+<div class="navbar navbar-inverse navbar-fixed-top">      
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <img class="navbar-brand" src="{% static '/favicon/favicon.ico' %}"/>
+      <a class="navbar-brand" href="{% url 'home' %}">Sistema LOGUS</a>      
+    </div>
+    <div class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="{% url 'produto-lista' %}"><span class="glyphicon glyphicon-tags"></span> Produtos</a></li>
+        <li><a href="{% url 'entrada-lista' %}"><span class="glyphicon glyphicon-shopping-cart"></span> Entradas</a></li>
+        <li><a href="{% url 'fornecedor-lista' %}"><span class="glyphicon glyphicon-user"></span> Fornecedores</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-pencil"></span> Cadastros <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li class="dropdown-header">Cadastro de Produtos</li>
+            <li><a href="{% url 'produto-add' %}">Produto</a></li>
+            <li><a href="{% url 'produto-add' %}">Marca</a></li>
+            <li class="divider"></li>
+            <li class="dropdown-header">Cadastro de Pessoas</li>
+            <li><a href="{% url 'fornecedor-lista' %}">Cliente</a></li>
+            <li><a href="{% url 'fornecedor-lista' %}">Vendedor</a></li>
+            <!-- <li><a href="#">Contato</a></li>
+            <li><a href="#">Fornecedor</a></li>
+            <li><a href="#">Funcionário</a></li> -->
+          </ul>
+        </li>
+        <!-- <li><a href="#"><span class="glyphicon glyphicon-flag"></span> Estoque</a></li> -->
+      </ul>
+
+
+
+      <!-- <form class="navbar-form navbar-right">
+        <div class="form-group">
+          <input type="text" placeholder="Email" class="form-control">
+        </div>
+        <div class="form-group">
+          <input type="password" placeholder="Password" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-success">Sign in</button>
+      </form> -->
+      
+      <ul class="nav navbar-nav navbar-right">
+          <li><a href="{% url 'home' %}"><span class="glyphicon glyphicon-exclamation-sign"></span> Sobre</a></li>        
+          <li class=" dropdown"><a href="#" class="dropdown-toggle active" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user"></span> {{ user.username }}<span class="caret"></a>
+              <ul class="dropdown-menu">
+                  <li><a href="{% url 'password_change' %}">Mudar Senha</a></li>
+                  {% if request.user.is_superuser %}
+                      <li><a href="/admin">Administração</a></li>
+                  {% endif %}                  
+
+                  <!--
+                  {% if user.last_login %}
+                      <li class="divider"></li>
+                      <i>Último login em: {{user.last_login}}</i>
+                  {% endif %}-->
+
+              </ul>
+          </li>
+          <li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span> Sair</a></li>          
+      </ul>
+    </div><!--/.navbar-collapse -->
+  </div>
+</div>    

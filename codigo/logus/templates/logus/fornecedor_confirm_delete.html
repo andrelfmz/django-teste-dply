@@ -1,0 +1,33 @@
+{% extends "logus/fornecedor_list.html" %}
+{% load static %}
+
+
+{% block post_detail_link %}
+        
+    {% if object %}         
+        {{ block.super }} » <span class="breadcrumb-item active">Excluindo ({{object.pk}})</span>
+    {% endif %}
+
+{% endblock %}
+
+
+{% block title %}{% endblock %}
+{% block content %}
+
+	<h4>Fornecedor {% if object %}({{object.pk}}){% endif %}</h4>
+    <hr>
+    <div>
+        <form action="" method="post">{% csrf_token %}
+        	<p>Tem certeza de que deseja excluir o Fornecedor: <b>{{ object }}</b>?</p>
+           
+        	<button type="submit" class="btn btn-success">
+            	<span class="glyphicon glyphicon-ok"></span> Confirmar
+            </button> 
+
+            <a href="javascript:history.back()" class="btn btn-danger">
+            	<span class="glyphicon glyphicon-circle-arrow-left"></span> Retornar
+            </a>
+            
+        </form>
+    </div>
+{% endblock %}
