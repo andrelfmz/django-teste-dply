@@ -3,10 +3,11 @@ version: '3.1'
 services:
 
   web:
+    container_name: logus-web-container
     build: .
-    #command: bash -c 'python manage.py collectstatic --noinput && gunicorn logusweb.wsgi -b 0.0.0.0:8000 -w 3'
+    command: bash -c 'python manage.py collectstatic --noinput && gunicorn logusweb.wsgi -b 0.0.0.0:8000 -w 3'
     #command: bash -c 'python manage.py makemigrations --noinput && python manage.py migrate --noinput && python manage.py runserver 0.0.0.0:8000 --insecure'
-    command: bash -c 'python manage.py makemigrations --noinput && python manage.py migrate --noinput && gunicorn logusweb.wsgi -b 0.0.0.0:8000 -w 3'
+    #command: bash -c 'python manage.py makemigrations --noinput && python manage.py migrate --noinput && gunicorn logusweb.wsgi -b 0.0.0.0:8000 -w 3'
     volumes:
       - ./codigo:/code
     ports:
@@ -17,6 +18,7 @@ services:
       - db
 
   db:
+    container_name: logus-db-container
     image: postgres
     environment:
       POSTGRES_PASSWORD: example

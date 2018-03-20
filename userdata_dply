@@ -9,4 +9,5 @@ cd /tmp/mycompose;
 git clone https://github.com/andrelfmz/django-teste-dply.git .;
 docker volume create pg_data;
 docker-compose up -d;
+cat ./dados_bkp/dump_bkp_sql.sql | docker exec -i logus-db-container psql -Upostgres
 echo 1 > /tmp/mycompose/done
