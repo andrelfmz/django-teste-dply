@@ -4,4 +4,16 @@
 
 # user-data (dply)
 
-<userdata_dply>
+	#!/bin/sh
+	export DEBIAN_FRONTEND=noninteractive;
+	apt-get update;
+	apt-get -y upgrade;
+	apt-get -y install docker.io python-pip git;
+	pip install docker-compose;
+	mkdir /tmp/mycompose;
+	cd /tmp/mycompose;
+	git clone https://github.com/andrelfmz/django-teste-dply.git .;
+	docker-compose up -d;
+	sleep 20;
+	cat ./dados_bkp/dump_bkp_sql.sql | docker exec -i logus-db-container psql -Upostgres
+	echo 1 > /tmp/mycompose/done
