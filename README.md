@@ -1,6 +1,9 @@
 # django-teste-dply
 
-
+	<p>
+          <ip>:8000
+	  admin/master123
+	</p>
 
 # user-data (dply)
 
