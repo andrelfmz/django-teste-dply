@@ -4,8 +4,9 @@ services:
 
   web:
     build: .
-    command: bash -c 'python manage.py collectstatic --noinput && gunicorn logusweb.wsgi -b 0.0.0.0:8000 -w 3'
+    #command: bash -c 'python manage.py collectstatic --noinput && gunicorn logusweb.wsgi -b 0.0.0.0:8000 -w 3'
     #command: bash -c 'python manage.py makemigrations --noinput && python manage.py migrate --noinput && python manage.py runserver 0.0.0.0:8000 --insecure'
+    command: bash -c 'python manage.py makemigrations --noinput && python manage.py migrate --noinput && gunicorn logusweb.wsgi -b 0.0.0.0:8000 -w 3'
     volumes:
       - ./codigo:/code
     ports:
@@ -21,5 +22,7 @@ services:
       POSTGRES_PASSWORD: example
       PGDATA: /dados
     volumes:
-      - ./dados:/dados
+      - pg_data:/dados
 
+volumes:
+  pg_data:
