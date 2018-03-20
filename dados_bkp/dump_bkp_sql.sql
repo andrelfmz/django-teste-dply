@@ -50,14 +50,15 @@ SET default_transaction_read_only = off;
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 10.2 (Debian 10.2-1.pgdg90+1)
--- Dumped by pg_dump version 10.2 (Debian 10.2-1.pgdg90+1)
+-- Dumped from database version 10.3 (Debian 10.3-1.pgdg90+1)
+-- Dumped by pg_dump version 10.3 (Debian 10.3-1.pgdg90+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 SET row_security = off;
@@ -83,33 +84,31 @@ CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 
 
-SET search_path = public, pg_catalog;
-
 --
 -- Name: fn_atualizar_estoque(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
-CREATE FUNCTION fn_atualizar_estoque() RETURNS trigger
+CREATE FUNCTION public.fn_atualizar_estoque() RETURNS trigger
     LANGUAGE plpgsql
-    AS $$
-BEGIN
-  IF (TG_OP = 'INSERT') THEN
-    UPDATE LOGUS_PRODUTO SET ESTOQUE = ESTOQUE + NEW.QUANTIDADE WHERE ID = NEW.PRODUTO_ID;
-    RETURN NEW;
-  ELSIF (TG_OP = 'UPDATE') THEN
-    IF (NEW.PRODUTO_ID = OLD.PRODUTO_ID) THEN
-      UPDATE LOGUS_PRODUTO SET ESTOQUE = ESTOQUE + (NEW.QUANTIDADE - OLD.QUANTIDADE) WHERE ID = NEW.PRODUTO_ID; 
-      RETURN NEW;
-    ELSE
-      UPDATE LOGUS_PRODUTO SET ESTOQUE = ESTOQUE - OLD.QUANTIDADE WHERE ID = OLD.PRODUTO_ID; 
-      UPDATE LOGUS_PRODUTO SET ESTOQUE = ESTOQUE + NEW.QUANTIDADE WHERE ID = NEW.PRODUTO_ID;
-      RETURN NEW;
-    END IF;
-  ELSIF (TG_OP = 'DELETE') THEN
-    UPDATE LOGUS_PRODUTO SET ESTOQUE = ESTOQUE - OLD.QUANTIDADE WHERE ID = OLD.PRODUTO_ID; 
-    RETURN OLD;
-  END IF;
-  RETURN NULL;
+    AS $$
+BEGIN
+  IF (TG_OP = 'INSERT') THEN
+    UPDATE LOGUS_PRODUTO SET ESTOQUE = ESTOQUE + NEW.QUANTIDADE WHERE ID = NEW.PRODUTO_ID;
+    RETURN NEW;
+  ELSIF (TG_OP = 'UPDATE') THEN
+    IF (NEW.PRODUTO_ID = OLD.PRODUTO_ID) THEN
+      UPDATE LOGUS_PRODUTO SET ESTOQUE = ESTOQUE + (NEW.QUANTIDADE - OLD.QUANTIDADE) WHERE ID = NEW.PRODUTO_ID; 
+      RETURN NEW;
+    ELSE
+      UPDATE LOGUS_PRODUTO SET ESTOQUE = ESTOQUE - OLD.QUANTIDADE WHERE ID = OLD.PRODUTO_ID; 
+      UPDATE LOGUS_PRODUTO SET ESTOQUE = ESTOQUE + NEW.QUANTIDADE WHERE ID = NEW.PRODUTO_ID;
+      RETURN NEW;
+    END IF;
+  ELSIF (TG_OP = 'DELETE') THEN
+    UPDATE LOGUS_PRODUTO SET ESTOQUE = ESTOQUE - OLD.QUANTIDADE WHERE ID = OLD.PRODUTO_ID; 
+    RETURN OLD;
+  END IF;
+  RETURN NULL;
 END$$;
 
 
@@ -119,13 +118,13 @@ ALTER FUNCTION public.fn_atualizar_estoque() OWNER TO postgres;
 -- Name: fn_deletar_itens_entrada(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
-CREATE FUNCTION fn_deletar_itens_entrada() RETURNS trigger
+CREATE FUNCTION public.fn_deletar_itens_entrada() RETURNS trigger
     LANGUAGE plpgsql
-    AS $$
-BEGIN
-  DELETE FROM LOGUS_ITENSENTRADA WHERE ENTRADA_ID=OLD.ID;
-  RETURN OLD;
-END
+    AS $$
+BEGIN
+  DELETE FROM LOGUS_ITENSENTRADA WHERE ENTRADA_ID=OLD.ID;
+  RETURN OLD;
+END
 $$;
 
 
@@ -139,19 +138,19 @@ SET default_with_oids = false;
 -- Name: auth_group; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE auth_group (
+CREATE TABLE public.auth_group (
     id integer NOT NULL,
     name character varying(80) NOT NULL
 );
 
 
-ALTER TABLE auth_group OWNER TO postgres;
+ALTER TABLE public.auth_group OWNER TO postgres;
 
 --
 -- Name: auth_group_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE auth_group_id_seq
+CREATE SEQUENCE public.auth_group_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -160,33 +159,33 @@ CREATE SEQUENCE auth_group_id_seq
     CACHE 1;
 
 
-ALTER TABLE auth_group_id_seq OWNER TO postgres;
+ALTER TABLE public.auth_group_id_seq OWNER TO postgres;
 
 --
 -- Name: auth_group_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE auth_group_id_seq OWNED BY auth_group.id;
+ALTER SEQUENCE public.auth_group_id_seq OWNED BY public.auth_group.id;
 
 
 --
 -- Name: auth_group_permissions; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE auth_group_permissions (
+CREATE TABLE public.auth_group_permissions (
     id integer NOT NULL,
     group_id integer NOT NULL,
     permission_id integer NOT NULL
 );
 
 
-ALTER TABLE auth_group_permissions OWNER TO postgres;
+ALTER TABLE public.auth_group_permissions OWNER TO postgres;
 
 --
 -- Name: auth_group_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE auth_group_permissions_id_seq
+CREATE SEQUENCE public.auth_group_permissions_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -195,20 +194,20 @@ CREATE SEQUENCE auth_group_permissions_id_seq
     CACHE 1;
 
 
-ALTER TABLE auth_group_permissions_id_seq OWNER TO postgres;
+ALTER TABLE public.auth_group_permissions_id_seq OWNER TO postgres;
 
 --
 -- Name: auth_group_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE auth_group_permissions_id_seq OWNED BY auth_group_permissions.id;
+ALTER SEQUENCE public.auth_group_permissions_id_seq OWNED BY public.auth_group_permissions.id;
 
 
 --
 -- Name: auth_permission; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE auth_permission (
+CREATE TABLE public.auth_permission (
     id integer NOT NULL,
     name character varying(255) NOT NULL,
     content_type_id integer NOT NULL,
@@ -216,13 +215,13 @@ CREATE TABLE auth_permission (
 );
 
 
-ALTER TABLE auth_permission OWNER TO postgres;
+ALTER TABLE public.auth_permission OWNER TO postgres;
 
 --
 -- Name: auth_permission_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE auth_permission_id_seq
+CREATE SEQUENCE public.auth_permission_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -231,20 +230,20 @@ CREATE SEQUENCE auth_permission_id_seq
     CACHE 1;
 
 
-ALTER TABLE auth_permission_id_seq OWNER TO postgres;
+ALTER TABLE public.auth_permission_id_seq OWNER TO postgres;
 
 --
 -- Name: auth_permission_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE auth_permission_id_seq OWNED BY auth_permission.id;
+ALTER SEQUENCE public.auth_permission_id_seq OWNED BY public.auth_permission.id;
 
 
 --
 -- Name: auth_user; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE auth_user (
+CREATE TABLE public.auth_user (
     id integer NOT NULL,
     password character varying(128) NOT NULL,
     last_login timestamp with time zone,
@@ -259,26 +258,26 @@ CREATE TABLE auth_user (
 );
 
 
-ALTER TABLE auth_user OWNER TO postgres;
+ALTER TABLE public.auth_user OWNER TO postgres;
 
 --
 -- Name: auth_user_groups; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE auth_user_groups (
+CREATE TABLE public.auth_user_groups (
     id integer NOT NULL,
     user_id integer NOT NULL,
     group_id integer NOT NULL
 );
 
 
-ALTER TABLE auth_user_groups OWNER TO postgres;
+ALTER TABLE public.auth_user_groups OWNER TO postgres;
 
 --
 -- Name: auth_user_groups_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE auth_user_groups_id_seq
+CREATE SEQUENCE public.auth_user_groups_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -287,20 +286,20 @@ CREATE SEQUENCE auth_user_groups_id_seq
     CACHE 1;
 
 
-ALTER TABLE auth_user_groups_id_seq OWNER TO postgres;
+ALTER TABLE public.auth_user_groups_id_seq OWNER TO postgres;
 
 --
 -- Name: auth_user_groups_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE auth_user_groups_id_seq OWNED BY auth_user_groups.id;
+ALTER SEQUENCE public.auth_user_groups_id_seq OWNED BY public.auth_user_groups.id;
 
 
 --
 -- Name: auth_user_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE auth_user_id_seq
+CREATE SEQUENCE public.auth_user_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -309,33 +308,33 @@ CREATE SEQUENCE auth_user_id_seq
     CACHE 1;
 
 
-ALTER TABLE auth_user_id_seq OWNER TO postgres;
+ALTER TABLE public.auth_user_id_seq OWNER TO postgres;
 
 --
 -- Name: auth_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE auth_user_id_seq OWNED BY auth_user.id;
+ALTER SEQUENCE public.auth_user_id_seq OWNED BY public.auth_user.id;
 
 
 --
 -- Name: auth_user_user_permissions; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE auth_user_user_permissions (
+CREATE TABLE public.auth_user_user_permissions (
     id integer NOT NULL,
     user_id integer NOT NULL,
     permission_id integer NOT NULL
 );
 
 
-ALTER TABLE auth_user_user_permissions OWNER TO postgres;
+ALTER TABLE public.auth_user_user_permissions OWNER TO postgres;
 
 --
 -- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE auth_user_user_permissions_id_seq
+CREATE SEQUENCE public.auth_user_user_permissions_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -344,20 +343,20 @@ CREATE SEQUENCE auth_user_user_permissions_id_seq
     CACHE 1;
 
 
-ALTER TABLE auth_user_user_permissions_id_seq OWNER TO postgres;
+ALTER TABLE public.auth_user_user_permissions_id_seq OWNER TO postgres;
 
 --
 -- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE auth_user_user_permissions_id_seq OWNED BY auth_user_user_permissions.id;
+ALTER SEQUENCE public.auth_user_user_permissions_id_seq OWNED BY public.auth_user_user_permissions.id;
 
 
 --
 -- Name: django_admin_log; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE django_admin_log (
+CREATE TABLE public.django_admin_log (
     id integer NOT NULL,
     action_time timestamp with time zone NOT NULL,
     object_id text,
@@ -370,13 +369,13 @@ CREATE TABLE django_admin_log (
 );
 
 
-ALTER TABLE django_admin_log OWNER TO postgres;
+ALTER TABLE public.django_admin_log OWNER TO postgres;
 
 --
 -- Name: django_admin_log_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE django_admin_log_id_seq
+CREATE SEQUENCE public.django_admin_log_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -385,33 +384,33 @@ CREATE SEQUENCE django_admin_log_id_seq
     CACHE 1;
 
 
-ALTER TABLE django_admin_log_id_seq OWNER TO postgres;
+ALTER TABLE public.django_admin_log_id_seq OWNER TO postgres;
 
 --
 -- Name: django_admin_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE django_admin_log_id_seq OWNED BY django_admin_log.id;
+ALTER SEQUENCE public.django_admin_log_id_seq OWNED BY public.django_admin_log.id;
 
 
 --
 -- Name: django_content_type; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE django_content_type (
+CREATE TABLE public.django_content_type (
     id integer NOT NULL,
     app_label character varying(100) NOT NULL,
     model character varying(100) NOT NULL
 );
 
 
-ALTER TABLE django_content_type OWNER TO postgres;
+ALTER TABLE public.django_content_type OWNER TO postgres;
 
 --
 -- Name: django_content_type_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE django_content_type_id_seq
+CREATE SEQUENCE public.django_content_type_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -420,20 +419,20 @@ CREATE SEQUENCE django_content_type_id_seq
     CACHE 1;
 
 
-ALTER TABLE django_content_type_id_seq OWNER TO postgres;
+ALTER TABLE public.django_content_type_id_seq OWNER TO postgres;
 
 --
 -- Name: django_content_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE django_content_type_id_seq OWNED BY django_content_type.id;
+ALTER SEQUENCE public.django_content_type_id_seq OWNED BY public.django_content_type.id;
 
 
 --
 -- Name: django_migrations; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE django_migrations (
+CREATE TABLE public.django_migrations (
     id integer NOT NULL,
     app character varying(255) NOT NULL,
     name character varying(255) NOT NULL,
@@ -441,13 +440,13 @@ CREATE TABLE django_migrations (
 );
 
 
-ALTER TABLE django_migrations OWNER TO postgres;
+ALTER TABLE public.django_migrations OWNER TO postgres;
 
 --
 -- Name: django_migrations_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE django_migrations_id_seq
+CREATE SEQUENCE public.django_migrations_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -456,33 +455,33 @@ CREATE SEQUENCE django_migrations_id_seq
     CACHE 1;
 
 
-ALTER TABLE django_migrations_id_seq OWNER TO postgres;
+ALTER TABLE public.django_migrations_id_seq OWNER TO postgres;
 
 --
 -- Name: django_migrations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE django_migrations_id_seq OWNED BY django_migrations.id;
+ALTER SEQUENCE public.django_migrations_id_seq OWNED BY public.django_migrations.id;
 
 
 --
 -- Name: django_session; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE django_session (
+CREATE TABLE public.django_session (
     session_key character varying(40) NOT NULL,
     session_data text NOT NULL,
     expire_date timestamp with time zone NOT NULL
 );
 
 
-ALTER TABLE django_session OWNER TO postgres;
+ALTER TABLE public.django_session OWNER TO postgres;
 
 --
 -- Name: logus_entrada; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE logus_entrada (
+CREATE TABLE public.logus_entrada (
     id integer NOT NULL,
     data date NOT NULL,
     valortotal numeric(10,2) NOT NULL,
@@ -490,13 +489,13 @@ CREATE TABLE logus_entrada (
 );
 
 
-ALTER TABLE logus_entrada OWNER TO postgres;
+ALTER TABLE public.logus_entrada OWNER TO postgres;
 
 --
 -- Name: logus_entrada_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE logus_entrada_id_seq
+CREATE SEQUENCE public.logus_entrada_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -505,20 +504,20 @@ CREATE SEQUENCE logus_entrada_id_seq
     CACHE 1;
 
 
-ALTER TABLE logus_entrada_id_seq OWNER TO postgres;
+ALTER TABLE public.logus_entrada_id_seq OWNER TO postgres;
 
 --
 -- Name: logus_entrada_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE logus_entrada_id_seq OWNED BY logus_entrada.id;
+ALTER SEQUENCE public.logus_entrada_id_seq OWNED BY public.logus_entrada.id;
 
 
 --
 -- Name: logus_familymember; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE logus_familymember (
+CREATE TABLE public.logus_familymember (
     id integer NOT NULL,
     name character varying(100) NOT NULL,
     relationship character varying(100) NOT NULL,
@@ -526,13 +525,13 @@ CREATE TABLE logus_familymember (
 );
 
 
-ALTER TABLE logus_familymember OWNER TO postgres;
+ALTER TABLE public.logus_familymember OWNER TO postgres;
 
 --
 -- Name: logus_familymember_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE logus_familymember_id_seq
+CREATE SEQUENCE public.logus_familymember_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -541,20 +540,20 @@ CREATE SEQUENCE logus_familymember_id_seq
     CACHE 1;
 
 
-ALTER TABLE logus_familymember_id_seq OWNER TO postgres;
+ALTER TABLE public.logus_familymember_id_seq OWNER TO postgres;
 
 --
 -- Name: logus_familymember_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE logus_familymember_id_seq OWNED BY logus_familymember.id;
+ALTER SEQUENCE public.logus_familymember_id_seq OWNED BY public.logus_familymember.id;
 
 
 --
 -- Name: logus_fornecedor; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE logus_fornecedor (
+CREATE TABLE public.logus_fornecedor (
     id integer NOT NULL,
     nome character varying(100) NOT NULL,
     email character varying(254) NOT NULL,
@@ -565,13 +564,13 @@ CREATE TABLE logus_fornecedor (
 );
 
 
-ALTER TABLE logus_fornecedor OWNER TO postgres;
+ALTER TABLE public.logus_fornecedor OWNER TO postgres;
 
 --
 -- Name: logus_fornecedor_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE logus_fornecedor_id_seq
+CREATE SEQUENCE public.logus_fornecedor_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -580,20 +579,20 @@ CREATE SEQUENCE logus_fornecedor_id_seq
     CACHE 1;
 
 
-ALTER TABLE logus_fornecedor_id_seq OWNER TO postgres;
+ALTER TABLE public.logus_fornecedor_id_seq OWNER TO postgres;
 
 --
 -- Name: logus_fornecedor_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE logus_fornecedor_id_seq OWNED BY logus_fornecedor.id;
+ALTER SEQUENCE public.logus_fornecedor_id_seq OWNED BY public.logus_fornecedor.id;
 
 
 --
 -- Name: logus_itensentrada; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE logus_itensentrada (
+CREATE TABLE public.logus_itensentrada (
     id integer NOT NULL,
     quantidade numeric(10,3) NOT NULL,
     entrada_id integer NOT NULL,
@@ -603,13 +602,13 @@ CREATE TABLE logus_itensentrada (
 );
 
 
-ALTER TABLE logus_itensentrada OWNER TO postgres;
+ALTER TABLE public.logus_itensentrada OWNER TO postgres;
 
 --
 -- Name: logus_itensentrada_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE logus_itensentrada_id_seq
+CREATE SEQUENCE public.logus_itensentrada_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -618,20 +617,20 @@ CREATE SEQUENCE logus_itensentrada_id_seq
     CACHE 1;
 
 
-ALTER TABLE logus_itensentrada_id_seq OWNER TO postgres;
+ALTER TABLE public.logus_itensentrada_id_seq OWNER TO postgres;
 
 --
 -- Name: logus_itensentrada_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE logus_itensentrada_id_seq OWNED BY logus_itensentrada.id;
+ALTER SEQUENCE public.logus_itensentrada_id_seq OWNED BY public.logus_itensentrada.id;
 
 
 --
 -- Name: logus_produto; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE logus_produto (
+CREATE TABLE public.logus_produto (
     id integer NOT NULL,
     descricao character varying(50) NOT NULL,
     valor numeric(10,2) NOT NULL,
@@ -639,13 +638,13 @@ CREATE TABLE logus_produto (
 );
 
 
-ALTER TABLE logus_produto OWNER TO postgres;
+ALTER TABLE public.logus_produto OWNER TO postgres;
 
 --
 -- Name: logus_produto_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE logus_produto_id_seq
+CREATE SEQUENCE public.logus_produto_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -654,20 +653,20 @@ CREATE SEQUENCE logus_produto_id_seq
     CACHE 1;
 
 
-ALTER TABLE logus_produto_id_seq OWNER TO postgres;
+ALTER TABLE public.logus_produto_id_seq OWNER TO postgres;
 
 --
 -- Name: logus_produto_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE logus_produto_id_seq OWNED BY logus_produto.id;
+ALTER SEQUENCE public.logus_produto_id_seq OWNED BY public.logus_produto.id;
 
 
 --
 -- Name: logus_profile; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE logus_profile (
+CREATE TABLE public.logus_profile (
     id integer NOT NULL,
     first_name character varying(100) NOT NULL,
     last_name character varying(100) NOT NULL,
@@ -675,13 +674,13 @@ CREATE TABLE logus_profile (
 );
 
 
-ALTER TABLE logus_profile OWNER TO postgres;
+ALTER TABLE public.logus_profile OWNER TO postgres;
 
 --
 -- Name: logus_profile_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE logus_profile_id_seq
+CREATE SEQUENCE public.logus_profile_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -690,125 +689,125 @@ CREATE SEQUENCE logus_profile_id_seq
     CACHE 1;
 
 
-ALTER TABLE logus_profile_id_seq OWNER TO postgres;
+ALTER TABLE public.logus_profile_id_seq OWNER TO postgres;
 
 --
 -- Name: logus_profile_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE logus_profile_id_seq OWNED BY logus_profile.id;
+ALTER SEQUENCE public.logus_profile_id_seq OWNED BY public.logus_profile.id;
 
 
 --
 -- Name: auth_group id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY auth_group ALTER COLUMN id SET DEFAULT nextval('auth_group_id_seq'::regclass);
+ALTER TABLE ONLY public.auth_group ALTER COLUMN id SET DEFAULT nextval('public.auth_group_id_seq'::regclass);
 
 
 --
 -- Name: auth_group_permissions id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY auth_group_permissions ALTER COLUMN id SET DEFAULT nextval('auth_group_permissions_id_seq'::regclass);
+ALTER TABLE ONLY public.auth_group_permissions ALTER COLUMN id SET DEFAULT nextval('public.auth_group_permissions_id_seq'::regclass);
 
 
 --
 -- Name: auth_permission id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY auth_permission ALTER COLUMN id SET DEFAULT nextval('auth_permission_id_seq'::regclass);
+ALTER TABLE ONLY public.auth_permission ALTER COLUMN id SET DEFAULT nextval('public.auth_permission_id_seq'::regclass);
 
 
 --
 -- Name: auth_user id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY auth_user ALTER COLUMN id SET DEFAULT nextval('auth_user_id_seq'::regclass);
+ALTER TABLE ONLY public.auth_user ALTER COLUMN id SET DEFAULT nextval('public.auth_user_id_seq'::regclass);
 
 
 --
 -- Name: auth_user_groups id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY auth_user_groups ALTER COLUMN id SET DEFAULT nextval('auth_user_groups_id_seq'::regclass);
+ALTER TABLE ONLY public.auth_user_groups ALTER COLUMN id SET DEFAULT nextval('public.auth_user_groups_id_seq'::regclass);
 
 
 --
 -- Name: auth_user_user_permissions id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY auth_user_user_permissions ALTER COLUMN id SET DEFAULT nextval('auth_user_user_permissions_id_seq'::regclass);
+ALTER TABLE ONLY public.auth_user_user_permissions ALTER COLUMN id SET DEFAULT nextval('public.auth_user_user_permissions_id_seq'::regclass);
 
 
 --
 -- Name: django_admin_log id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY django_admin_log ALTER COLUMN id SET DEFAULT nextval('django_admin_log_id_seq'::regclass);
+ALTER TABLE ONLY public.django_admin_log ALTER COLUMN id SET DEFAULT nextval('public.django_admin_log_id_seq'::regclass);
 
 
 --
 -- Name: django_content_type id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY django_content_type ALTER COLUMN id SET DEFAULT nextval('django_content_type_id_seq'::regclass);
+ALTER TABLE ONLY public.django_content_type ALTER COLUMN id SET DEFAULT nextval('public.django_content_type_id_seq'::regclass);
 
 
 --
 -- Name: django_migrations id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY django_migrations ALTER COLUMN id SET DEFAULT nextval('django_migrations_id_seq'::regclass);
+ALTER TABLE ONLY public.django_migrations ALTER COLUMN id SET DEFAULT nextval('public.django_migrations_id_seq'::regclass);
 
 
 --
 -- Name: logus_entrada id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY logus_entrada ALTER COLUMN id SET DEFAULT nextval('logus_entrada_id_seq'::regclass);
+ALTER TABLE ONLY public.logus_entrada ALTER COLUMN id SET DEFAULT nextval('public.logus_entrada_id_seq'::regclass);
 
 
 --
 -- Name: logus_familymember id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY logus_familymember ALTER COLUMN id SET DEFAULT nextval('logus_familymember_id_seq'::regclass);
+ALTER TABLE ONLY public.logus_familymember ALTER COLUMN id SET DEFAULT nextval('public.logus_familymember_id_seq'::regclass);
 
 
 --
 -- Name: logus_fornecedor id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY logus_fornecedor ALTER COLUMN id SET DEFAULT nextval('logus_fornecedor_id_seq'::regclass);
+ALTER TABLE ONLY public.logus_fornecedor ALTER COLUMN id SET DEFAULT nextval('public.logus_fornecedor_id_seq'::regclass);
 
 
 --
 -- Name: logus_itensentrada id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY logus_itensentrada ALTER COLUMN id SET DEFAULT nextval('logus_itensentrada_id_seq'::regclass);
+ALTER TABLE ONLY public.logus_itensentrada ALTER COLUMN id SET DEFAULT nextval('public.logus_itensentrada_id_seq'::regclass);
 
 
 --
 -- Name: logus_produto id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY logus_produto ALTER COLUMN id SET DEFAULT nextval('logus_produto_id_seq'::regclass);
+ALTER TABLE ONLY public.logus_produto ALTER COLUMN id SET DEFAULT nextval('public.logus_produto_id_seq'::regclass);
 
 
 --
 -- Name: logus_profile id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY logus_profile ALTER COLUMN id SET DEFAULT nextval('logus_profile_id_seq'::regclass);
+ALTER TABLE ONLY public.logus_profile ALTER COLUMN id SET DEFAULT nextval('public.logus_profile_id_seq'::regclass);
 
 
 --
 -- Data for Name: auth_group; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY auth_group (id, name) FROM stdin;
+COPY public.auth_group (id, name) FROM stdin;
 2	Almoxarife
 \.
 
@@ -817,7 +816,7 @@ COPY auth_group (id, name) FROM stdin;
 -- Data for Name: auth_group_permissions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY auth_group_permissions (id, group_id, permission_id) FROM stdin;
+COPY public.auth_group_permissions (id, group_id, permission_id) FROM stdin;
 8	2	28
 9	2	29
 12	2	42
@@ -829,7 +828,7 @@ COPY auth_group_permissions (id, group_id, permission_id) FROM stdin;
 -- Data for Name: auth_permission; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY auth_permission (id, name, content_type_id, codename) FROM stdin;
+COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 1	Can add log entry	1	add_logentry
 2	Can change log entry	1	change_logentry
 3	Can delete log entry	1	delete_logentry
@@ -879,11 +878,8 @@ COPY auth_permission (id, name, content_type_id, codename) FROM stdin;
 -- Data for Name: auth_user; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
-5	pbkdf2_sha256$100000$36EkO8iQUfjd$3oa61X800e7Q6rNzB3/8rObk59TxIx6ybWkj5ZK1W8M=	2018-03-12 11:42:27.41663+00	f	rodrigo			maltarodrigo@hotmail.com	f	t	2018-03-09 11:56:05+00
-4	pbkdf2_sha256$100000$dniKMyutolGG$FilkIBKToX0yE+kWK7iXW1h9pUIds5sgAR+YgGCd39s=	2018-03-12 12:39:51.645749+00	f	teste			andrelfmz@hotmail.com	f	t	2018-03-04 19:45:54+00
-3	pbkdf2_sha256$100000$vExhGPHjKxO4$4AwDihOCTGqeC8lIbWg1+o9QHCNzbxqJ/paZNm5Vlzg=	2018-03-17 18:42:05.088756+00	t	admin				t	t	2018-03-02 16:54:39.406604+00
-6	pbkdf2_sha256$100000$skNSqk1FauPc$I1ttIWP+O7+a5sDNi9PWA0EBHo+3VoTij2oKqQoeZcA=	\N	f	teste2				f	t	2018-03-09 12:47:08+00
+COPY public.auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
+3	pbkdf2_sha256$100000$Leq54s831CNE$mzbCsqJWnC+EMj00X4ISVjM6aYx6h+GNtSUew/3b/F8=	2018-03-20 16:45:27.488765+00	t	admin				t	t	2018-03-02 16:54:39.406604+00
 \.
 
 
@@ -891,9 +887,7 @@ COPY auth_user (id, password, last_login, is_superuser, username, first_name, la
 -- Data for Name: auth_user_groups; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY auth_user_groups (id, user_id, group_id) FROM stdin;
-2	4	2
-3	5	2
+COPY public.auth_user_groups (id, user_id, group_id) FROM stdin;
 \.
 
 
@@ -901,7 +895,7 @@ COPY auth_user_groups (id, user_id, group_id) FROM stdin;
 -- Data for Name: auth_user_user_permissions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY auth_user_user_permissions (id, user_id, permission_id) FROM stdin;
+COPY public.auth_user_user_permissions (id, user_id, permission_id) FROM stdin;
 \.
 
 
@@ -909,7 +903,7 @@ COPY auth_user_user_permissions (id, user_id, permission_id) FROM stdin;
 -- Data for Name: django_admin_log; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) FROM stdin;
+COPY public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) FROM stdin;
 3	2018-03-04 19:45:54.766126+00	4	teste	1	[{"added": {}}]	2	3
 4	2018-03-07 19:32:59.839992+00	1	entradas	1	[{"added": {}}]	4	3
 5	2018-03-07 19:33:18.239876+00	4	teste	2	[{"changed": {"fields": ["groups"]}}]	2	3
@@ -950,6 +944,9 @@ COPY django_admin_log (id, action_time, object_id, object_repr, action_flag, cha
 40	2018-03-12 11:22:24.706166+00	2	Almoxarife	2	[{"changed": {"fields": ["permissions"]}}]	4	3
 41	2018-03-12 11:23:39.848082+00	5	rodrigo	2	[{"changed": {"fields": ["email"]}}]	2	3
 42	2018-03-12 12:41:21.507009+00	2	Almoxarife	2	[{"changed": {"fields": ["permissions"]}}]	4	3
+43	2018-03-20 16:44:31.971869+00	5	rodrigo	3		2	3
+44	2018-03-20 16:44:31.975292+00	4	teste	3		2	3
+45	2018-03-20 16:44:31.977256+00	6	teste2	3		2	3
 \.
 
 
@@ -957,7 +954,7 @@ COPY django_admin_log (id, action_time, object_id, object_repr, action_flag, cha
 -- Data for Name: django_content_type; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY django_content_type (id, app_label, model) FROM stdin;
+COPY public.django_content_type (id, app_label, model) FROM stdin;
 1	admin	logentry
 2	auth	user
 3	auth	permission
@@ -978,7 +975,7 @@ COPY django_content_type (id, app_label, model) FROM stdin;
 -- Data for Name: django_migrations; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY django_migrations (id, app, name, applied) FROM stdin;
+COPY public.django_migrations (id, app, name, applied) FROM stdin;
 1	contenttypes	0001_initial	2018-02-28 17:32:43.828363+00
 2	auth	0001_initial	2018-02-28 17:32:44.087155+00
 3	admin	0001_initial	2018-02-28 17:32:44.179095+00
@@ -1033,7 +1030,7 @@ COPY django_migrations (id, app, name, applied) FROM stdin;
 -- Data for Name: django_session; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY django_session (session_key, session_data, expire_date) FROM stdin;
+COPY public.django_session (session_key, session_data, expire_date) FROM stdin;
 zst1kp4agk8rd0xfc3ger2lz0wxt91s5	MmFhZTRmMzk0NzViZDcxYWFkZWMwMzEzNDRmZTQyMGVjNWEzYzFkYTp7Il9hdXRoX3VzZXJfaWQiOiIzIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJjM2VlNTI4M2VhMTlkN2UyNzNhY2Y2N2YxMDM0Y2QyYjQwYjY4NTBkIn0=	2018-03-05 17:08:31.290336+00
 719k9nk8o6g8tyaf69nobvom2k124df1	YWM1ZDBmYWI3NGYwNWQ2OTc0MGY5NzhjNGFkM2NiYTc5ZTE2MGZmYjp7Il9hdXRoX3VzZXJfaGFzaCI6ImMzZWU1MjgzZWExOWQ3ZTI3M2FjZjY3ZjEwMzRjZDJiNDBiNjg1MGQiLCJfYXV0aF91c2VyX2lkIjoiMyIsIl9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIn0=	2018-03-09 15:53:26.6379+00
 gm0s2b1yopxn3mo9pn8j4ktn1o8s4b95	ZjZjNjQ1NzZkNWVmNmNiOTkwZjE1NmI1YzBmMGVjMDg5MWUwNDIzMjp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9pZCI6IjMiLCJfYXV0aF91c2VyX2hhc2giOiJjM2VlNTI4M2VhMTlkN2UyNzNhY2Y2N2YxMDM0Y2QyYjQwYjY4NTBkIn0=	2018-03-05 17:19:20.970186+00
@@ -1068,7 +1065,7 @@ x7hhqftnuayo705z8sh5mpw3i6380jwl	YWM1ZDBmYWI3NGYwNWQ2OTc0MGY5NzhjNGFkM2NiYTc5ZTE
 -- Data for Name: logus_entrada; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY logus_entrada (id, data, valortotal, fornecedor_id) FROM stdin;
+COPY public.logus_entrada (id, data, valortotal, fornecedor_id) FROM stdin;
 2	2018-02-28	182.40	2
 3	2018-02-28	95.00	1
 4	2018-03-01	405.75	2
@@ -1089,7 +1086,7 @@ COPY logus_entrada (id, data, valortotal, fornecedor_id) FROM stdin;
 -- Data for Name: logus_familymember; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY logus_familymember (id, name, relationship, profile_id) FROM stdin;
+COPY public.logus_familymember (id, name, relationship, profile_id) FROM stdin;
 \.
 
 
@@ -1097,7 +1094,7 @@ COPY logus_familymember (id, name, relationship, profile_id) FROM stdin;
 -- Data for Name: logus_fornecedor; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY logus_fornecedor (id, nome, email, fone1, fone2, data_pub, tipo) FROM stdin;
+COPY public.logus_fornecedor (id, nome, email, fone1, fone2, data_pub, tipo) FROM stdin;
 1	KALUNGA	contato@kalunga.com.br	0982983492347	9827348234	2018-02-28	F
 2	IBM	contato@ibm.com.br	345345346	45643243	2018-02-28	J
 3	MALTA	maltarodrigo@hotmail.com	32680400	32680400	2018-03-09	J
@@ -1108,7 +1105,7 @@ COPY logus_fornecedor (id, nome, email, fone1, fone2, data_pub, tipo) FROM stdin
 -- Data for Name: logus_itensentrada; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY logus_itensentrada (id, quantidade, entrada_id, produto_id, valoru, valort) FROM stdin;
+COPY public.logus_itensentrada (id, quantidade, entrada_id, produto_id, valoru, valort) FROM stdin;
 3	3.000	2	2	27.55	82.65
 4	5.000	2	1	19.95	99.75
 5	2.000	3	1	19.95	39.90
@@ -1133,10 +1130,10 @@ COPY logus_itensentrada (id, quantidade, entrada_id, produto_id, valoru, valort)
 -- Data for Name: logus_produto; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY logus_produto (id, descricao, valor, estoque) FROM stdin;
-1	Pendrive 8 GB	19.95	7.000
-2	Pendrive 16 GB	27.55	53.000
+COPY public.logus_produto (id, descricao, valor, estoque) FROM stdin;
 3	HD externo Seagate 1 TB	405.75	30.000
+2	Pendrive 16 GB	27.55	53.000
+1	Pendrive 8 GB	19.95	7.000
 \.
 
 
@@ -1144,7 +1141,7 @@ COPY logus_produto (id, descricao, valor, estoque) FROM stdin;
 -- Data for Name: logus_profile; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY logus_profile (id, first_name, last_name, created_date) FROM stdin;
+COPY public.logus_profile (id, first_name, last_name, created_date) FROM stdin;
 \.
 
 
@@ -1152,112 +1149,112 @@ COPY logus_profile (id, first_name, last_name, created_date) FROM stdin;
 -- Name: auth_group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('auth_group_id_seq', 2, true);
+SELECT pg_catalog.setval('public.auth_group_id_seq', 2, true);
 
 
 --
 -- Name: auth_group_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('auth_group_permissions_id_seq', 13, true);
+SELECT pg_catalog.setval('public.auth_group_permissions_id_seq', 13, true);
 
 
 --
 -- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('auth_permission_id_seq', 47, true);
+SELECT pg_catalog.setval('public.auth_permission_id_seq', 47, true);
 
 
 --
 -- Name: auth_user_groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('auth_user_groups_id_seq', 3, true);
+SELECT pg_catalog.setval('public.auth_user_groups_id_seq', 3, true);
 
 
 --
 -- Name: auth_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('auth_user_id_seq', 6, true);
+SELECT pg_catalog.setval('public.auth_user_id_seq', 6, true);
 
 
 --
 -- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('auth_user_user_permissions_id_seq', 12, true);
+SELECT pg_catalog.setval('public.auth_user_user_permissions_id_seq', 12, true);
 
 
 --
 -- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('django_admin_log_id_seq', 42, true);
+SELECT pg_catalog.setval('public.django_admin_log_id_seq', 45, true);
 
 
 --
 -- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('django_content_type_id_seq', 13, true);
+SELECT pg_catalog.setval('public.django_content_type_id_seq', 13, true);
 
 
 --
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('django_migrations_id_seq', 47, true);
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 47, true);
 
 
 --
 -- Name: logus_entrada_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('logus_entrada_id_seq', 20, true);
+SELECT pg_catalog.setval('public.logus_entrada_id_seq', 21, true);
 
 
 --
 -- Name: logus_familymember_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('logus_familymember_id_seq', 1, false);
+SELECT pg_catalog.setval('public.logus_familymember_id_seq', 1, false);
 
 
 --
 -- Name: logus_fornecedor_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('logus_fornecedor_id_seq', 3, true);
+SELECT pg_catalog.setval('public.logus_fornecedor_id_seq', 3, true);
 
 
 --
 -- Name: logus_itensentrada_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('logus_itensentrada_id_seq', 24, true);
+SELECT pg_catalog.setval('public.logus_itensentrada_id_seq', 26, true);
 
 
 --
 -- Name: logus_produto_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('logus_produto_id_seq', 3, true);
+SELECT pg_catalog.setval('public.logus_produto_id_seq', 3, true);
 
 
 --
 -- Name: logus_profile_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('logus_profile_id_seq', 1, false);
+SELECT pg_catalog.setval('public.logus_profile_id_seq', 1, false);
 
 
 --
 -- Name: auth_group auth_group_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY auth_group
+ALTER TABLE ONLY public.auth_group
     ADD CONSTRAINT auth_group_name_key UNIQUE (name);
 
 
@@ -1265,7 +1262,7 @@ ALTER TABLE ONLY auth_group
 -- Name: auth_group_permissions auth_group_permissions_group_id_permission_id_0cd325b0_uniq; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY auth_group_permissions
+ALTER TABLE ONLY public.auth_group_permissions
     ADD CONSTRAINT auth_group_permissions_group_id_permission_id_0cd325b0_uniq UNIQUE (group_id, permission_id);
 
 
@@ -1273,7 +1270,7 @@ ALTER TABLE ONLY auth_group_permissions
 -- Name: auth_group_permissions auth_group_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY auth_group_permissions
+ALTER TABLE ONLY public.auth_group_permissions
     ADD CONSTRAINT auth_group_permissions_pkey PRIMARY KEY (id);
 
 
@@ -1281,7 +1278,7 @@ ALTER TABLE ONLY auth_group_permissions
 -- Name: auth_group auth_group_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY auth_group
+ALTER TABLE ONLY public.auth_group
     ADD CONSTRAINT auth_group_pkey PRIMARY KEY (id);
 
 
@@ -1289,7 +1286,7 @@ ALTER TABLE ONLY auth_group
 -- Name: auth_permission auth_permission_content_type_id_codename_01ab375a_uniq; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY auth_permission
+ALTER TABLE ONLY public.auth_permission
     ADD CONSTRAINT auth_permission_content_type_id_codename_01ab375a_uniq UNIQUE (content_type_id, codename);
 
 
@@ -1297,7 +1294,7 @@ ALTER TABLE ONLY auth_permission
 -- Name: auth_permission auth_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY auth_permission
+ALTER TABLE ONLY public.auth_permission
     ADD CONSTRAINT auth_permission_pkey PRIMARY KEY (id);
 
 
@@ -1305,7 +1302,7 @@ ALTER TABLE ONLY auth_permission
 -- Name: auth_user_groups auth_user_groups_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY auth_user_groups
+ALTER TABLE ONLY public.auth_user_groups
     ADD CONSTRAINT auth_user_groups_pkey PRIMARY KEY (id);
 
 
@@ -1313,7 +1310,7 @@ ALTER TABLE ONLY auth_user_groups
 -- Name: auth_user_groups auth_user_groups_user_id_group_id_94350c0c_uniq; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY auth_user_groups
+ALTER TABLE ONLY public.auth_user_groups
     ADD CONSTRAINT auth_user_groups_user_id_group_id_94350c0c_uniq UNIQUE (user_id, group_id);
 
 
@@ -1321,7 +1318,7 @@ ALTER TABLE ONLY auth_user_groups
 -- Name: auth_user auth_user_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY auth_user
+ALTER TABLE ONLY public.auth_user
     ADD CONSTRAINT auth_user_pkey PRIMARY KEY (id);
 
 
@@ -1329,7 +1326,7 @@ ALTER TABLE ONLY auth_user
 -- Name: auth_user_user_permissions auth_user_user_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY auth_user_user_permissions
+ALTER TABLE ONLY public.auth_user_user_permissions
     ADD CONSTRAINT auth_user_user_permissions_pkey PRIMARY KEY (id);
 
 
@@ -1337,7 +1334,7 @@ ALTER TABLE ONLY auth_user_user_permissions
 -- Name: auth_user_user_permissions auth_user_user_permissions_user_id_permission_id_14a6b632_uniq; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY auth_user_user_permissions
+ALTER TABLE ONLY public.auth_user_user_permissions
     ADD CONSTRAINT auth_user_user_permissions_user_id_permission_id_14a6b632_uniq UNIQUE (user_id, permission_id);
 
 
@@ -1345,7 +1342,7 @@ ALTER TABLE ONLY auth_user_user_permissions
 -- Name: auth_user auth_user_username_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY auth_user
+ALTER TABLE ONLY public.auth_user
     ADD CONSTRAINT auth_user_username_key UNIQUE (username);
 
 
@@ -1353,7 +1350,7 @@ ALTER TABLE ONLY auth_user
 -- Name: django_admin_log django_admin_log_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY django_admin_log
+ALTER TABLE ONLY public.django_admin_log
     ADD CONSTRAINT django_admin_log_pkey PRIMARY KEY (id);
 
 
@@ -1361,7 +1358,7 @@ ALTER TABLE ONLY django_admin_log
 -- Name: django_content_type django_content_type_app_label_model_76bd3d3b_uniq; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY django_content_type
+ALTER TABLE ONLY public.django_content_type
     ADD CONSTRAINT django_content_type_app_label_model_76bd3d3b_uniq UNIQUE (app_label, model);
 
 
@@ -1369,7 +1366,7 @@ ALTER TABLE ONLY django_content_type
 -- Name: django_content_type django_content_type_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY django_content_type
+ALTER TABLE ONLY public.django_content_type
     ADD CONSTRAINT django_content_type_pkey PRIMARY KEY (id);
 
 
@@ -1377,7 +1374,7 @@ ALTER TABLE ONLY django_content_type
 -- Name: django_migrations django_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY django_migrations
+ALTER TABLE ONLY public.django_migrations
     ADD CONSTRAINT django_migrations_pkey PRIMARY KEY (id);
 
 
@@ -1385,7 +1382,7 @@ ALTER TABLE ONLY django_migrations
 -- Name: django_session django_session_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY django_session
+ALTER TABLE ONLY public.django_session
     ADD CONSTRAINT django_session_pkey PRIMARY KEY (session_key);
 
 
@@ -1393,7 +1390,7 @@ ALTER TABLE ONLY django_session
 -- Name: logus_entrada logus_entrada_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY logus_entrada
+ALTER TABLE ONLY public.logus_entrada
     ADD CONSTRAINT logus_entrada_pkey PRIMARY KEY (id);
 
 
@@ -1401,7 +1398,7 @@ ALTER TABLE ONLY logus_entrada
 -- Name: logus_familymember logus_familymember_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY logus_familymember
+ALTER TABLE ONLY public.logus_familymember
     ADD CONSTRAINT logus_familymember_pkey PRIMARY KEY (id);
 
 
@@ -1409,7 +1406,7 @@ ALTER TABLE ONLY logus_familymember
 -- Name: logus_fornecedor logus_fornecedor_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY logus_fornecedor
+ALTER TABLE ONLY public.logus_fornecedor
     ADD CONSTRAINT logus_fornecedor_pkey PRIMARY KEY (id);
 
 
@@ -1417,7 +1414,7 @@ ALTER TABLE ONLY logus_fornecedor
 -- Name: logus_itensentrada logus_itensentrada_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY logus_itensentrada
+ALTER TABLE ONLY public.logus_itensentrada
     ADD CONSTRAINT logus_itensentrada_pkey PRIMARY KEY (id);
 
 
@@ -1425,7 +1422,7 @@ ALTER TABLE ONLY logus_itensentrada
 -- Name: logus_produto logus_produto_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY logus_produto
+ALTER TABLE ONLY public.logus_produto
     ADD CONSTRAINT logus_produto_pkey PRIMARY KEY (id);
 
 
@@ -1433,7 +1430,7 @@ ALTER TABLE ONLY logus_produto
 -- Name: logus_profile logus_profile_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY logus_profile
+ALTER TABLE ONLY public.logus_profile
     ADD CONSTRAINT logus_profile_pkey PRIMARY KEY (id);
 
 
@@ -1441,251 +1438,251 @@ ALTER TABLE ONLY logus_profile
 -- Name: auth_group_name_a6ea08ec_like; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX auth_group_name_a6ea08ec_like ON auth_group USING btree (name varchar_pattern_ops);
+CREATE INDEX auth_group_name_a6ea08ec_like ON public.auth_group USING btree (name varchar_pattern_ops);
 
 
 --
 -- Name: auth_group_permissions_group_id_b120cbf9; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX auth_group_permissions_group_id_b120cbf9 ON auth_group_permissions USING btree (group_id);
+CREATE INDEX auth_group_permissions_group_id_b120cbf9 ON public.auth_group_permissions USING btree (group_id);
 
 
 --
 -- Name: auth_group_permissions_permission_id_84c5c92e; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX auth_group_permissions_permission_id_84c5c92e ON auth_group_permissions USING btree (permission_id);
+CREATE INDEX auth_group_permissions_permission_id_84c5c92e ON public.auth_group_permissions USING btree (permission_id);
 
 
 --
 -- Name: auth_permission_content_type_id_2f476e4b; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX auth_permission_content_type_id_2f476e4b ON auth_permission USING btree (content_type_id);
+CREATE INDEX auth_permission_content_type_id_2f476e4b ON public.auth_permission USING btree (content_type_id);
 
 
 --
 -- Name: auth_user_groups_group_id_97559544; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX auth_user_groups_group_id_97559544 ON auth_user_groups USING btree (group_id);
+CREATE INDEX auth_user_groups_group_id_97559544 ON public.auth_user_groups USING btree (group_id);
 
 
 --
 -- Name: auth_user_groups_user_id_6a12ed8b; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX auth_user_groups_user_id_6a12ed8b ON auth_user_groups USING btree (user_id);
+CREATE INDEX auth_user_groups_user_id_6a12ed8b ON public.auth_user_groups USING btree (user_id);
 
 
 --
 -- Name: auth_user_user_permissions_permission_id_1fbb5f2c; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX auth_user_user_permissions_permission_id_1fbb5f2c ON auth_user_user_permissions USING btree (permission_id);
+CREATE INDEX auth_user_user_permissions_permission_id_1fbb5f2c ON public.auth_user_user_permissions USING btree (permission_id);
 
 
 --
 -- Name: auth_user_user_permissions_user_id_a95ead1b; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX auth_user_user_permissions_user_id_a95ead1b ON auth_user_user_permissions USING btree (user_id);
+CREATE INDEX auth_user_user_permissions_user_id_a95ead1b ON public.auth_user_user_permissions USING btree (user_id);
 
 
 --
 -- Name: auth_user_username_6821ab7c_like; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX auth_user_username_6821ab7c_like ON auth_user USING btree (username varchar_pattern_ops);
+CREATE INDEX auth_user_username_6821ab7c_like ON public.auth_user USING btree (username varchar_pattern_ops);
 
 
 --
 -- Name: django_admin_log_content_type_id_c4bce8eb; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX django_admin_log_content_type_id_c4bce8eb ON django_admin_log USING btree (content_type_id);
+CREATE INDEX django_admin_log_content_type_id_c4bce8eb ON public.django_admin_log USING btree (content_type_id);
 
 
 --
 -- Name: django_admin_log_user_id_c564eba6; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX django_admin_log_user_id_c564eba6 ON django_admin_log USING btree (user_id);
+CREATE INDEX django_admin_log_user_id_c564eba6 ON public.django_admin_log USING btree (user_id);
 
 
 --
 -- Name: django_session_expire_date_a5c62663; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX django_session_expire_date_a5c62663 ON django_session USING btree (expire_date);
+CREATE INDEX django_session_expire_date_a5c62663 ON public.django_session USING btree (expire_date);
 
 
 --
 -- Name: django_session_session_key_c0390e0f_like; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX django_session_session_key_c0390e0f_like ON django_session USING btree (session_key varchar_pattern_ops);
+CREATE INDEX django_session_session_key_c0390e0f_like ON public.django_session USING btree (session_key varchar_pattern_ops);
 
 
 --
 -- Name: logus_entrada_fornecedor_id_d751ab11; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX logus_entrada_fornecedor_id_d751ab11 ON logus_entrada USING btree (fornecedor_id);
+CREATE INDEX logus_entrada_fornecedor_id_d751ab11 ON public.logus_entrada USING btree (fornecedor_id);
 
 
 --
 -- Name: logus_familymember_profile_id_8ebfd489; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX logus_familymember_profile_id_8ebfd489 ON logus_familymember USING btree (profile_id);
+CREATE INDEX logus_familymember_profile_id_8ebfd489 ON public.logus_familymember USING btree (profile_id);
 
 
 --
 -- Name: logus_itensentrada_entrada_id_c1c8a2c0; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX logus_itensentrada_entrada_id_c1c8a2c0 ON logus_itensentrada USING btree (entrada_id);
+CREATE INDEX logus_itensentrada_entrada_id_c1c8a2c0 ON public.logus_itensentrada USING btree (entrada_id);
 
 
 --
 -- Name: logus_itensentrada_produto_id_7d70fe53; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX logus_itensentrada_produto_id_7d70fe53 ON logus_itensentrada USING btree (produto_id);
+CREATE INDEX logus_itensentrada_produto_id_7d70fe53 ON public.logus_itensentrada USING btree (produto_id);
 
 
 --
 -- Name: logus_entrada logus_entrada_bd; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
-CREATE TRIGGER logus_entrada_bd BEFORE DELETE ON logus_entrada FOR EACH ROW EXECUTE PROCEDURE fn_deletar_itens_entrada();
+CREATE TRIGGER logus_entrada_bd BEFORE DELETE ON public.logus_entrada FOR EACH ROW EXECUTE PROCEDURE public.fn_deletar_itens_entrada();
 
 
 --
 -- Name: logus_itensentrada logus_itensentrada_ad; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
-CREATE TRIGGER logus_itensentrada_ad AFTER DELETE ON logus_itensentrada FOR EACH ROW EXECUTE PROCEDURE fn_atualizar_estoque();
+CREATE TRIGGER logus_itensentrada_ad AFTER DELETE ON public.logus_itensentrada FOR EACH ROW EXECUTE PROCEDURE public.fn_atualizar_estoque();
 
 
 --
 -- Name: logus_itensentrada logus_itensentrada_ai; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
-CREATE TRIGGER logus_itensentrada_ai AFTER INSERT ON logus_itensentrada FOR EACH ROW EXECUTE PROCEDURE fn_atualizar_estoque();
+CREATE TRIGGER logus_itensentrada_ai AFTER INSERT ON public.logus_itensentrada FOR EACH ROW EXECUTE PROCEDURE public.fn_atualizar_estoque();
 
 
 --
 -- Name: logus_itensentrada logus_itensentrada_au; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
-CREATE TRIGGER logus_itensentrada_au AFTER UPDATE ON logus_itensentrada FOR EACH ROW EXECUTE PROCEDURE fn_atualizar_estoque();
+CREATE TRIGGER logus_itensentrada_au AFTER UPDATE ON public.logus_itensentrada FOR EACH ROW EXECUTE PROCEDURE public.fn_atualizar_estoque();
 
 
 --
 -- Name: auth_group_permissions auth_group_permissio_permission_id_84c5c92e_fk_auth_perm; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY auth_group_permissions
-    ADD CONSTRAINT auth_group_permissio_permission_id_84c5c92e_fk_auth_perm FOREIGN KEY (permission_id) REFERENCES auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissio_permission_id_84c5c92e_fk_auth_perm FOREIGN KEY (permission_id) REFERENCES public.auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: auth_group_permissions auth_group_permissions_group_id_b120cbf9_fk_auth_group_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY auth_group_permissions
-    ADD CONSTRAINT auth_group_permissions_group_id_b120cbf9_fk_auth_group_id FOREIGN KEY (group_id) REFERENCES auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_group_id_b120cbf9_fk_auth_group_id FOREIGN KEY (group_id) REFERENCES public.auth_group(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: auth_permission auth_permission_content_type_id_2f476e4b_fk_django_co; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY auth_permission
-    ADD CONSTRAINT auth_permission_content_type_id_2f476e4b_fk_django_co FOREIGN KEY (content_type_id) REFERENCES django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY public.auth_permission
+    ADD CONSTRAINT auth_permission_content_type_id_2f476e4b_fk_django_co FOREIGN KEY (content_type_id) REFERENCES public.django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: auth_user_groups auth_user_groups_group_id_97559544_fk_auth_group_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY auth_user_groups
-    ADD CONSTRAINT auth_user_groups_group_id_97559544_fk_auth_group_id FOREIGN KEY (group_id) REFERENCES auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY public.auth_user_groups
+    ADD CONSTRAINT auth_user_groups_group_id_97559544_fk_auth_group_id FOREIGN KEY (group_id) REFERENCES public.auth_group(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: auth_user_groups auth_user_groups_user_id_6a12ed8b_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY auth_user_groups
-    ADD CONSTRAINT auth_user_groups_user_id_6a12ed8b_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY public.auth_user_groups
+    ADD CONSTRAINT auth_user_groups_user_id_6a12ed8b_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: auth_user_user_permissions auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY auth_user_user_permissions
-    ADD CONSTRAINT auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm FOREIGN KEY (permission_id) REFERENCES auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY public.auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm FOREIGN KEY (permission_id) REFERENCES public.auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: auth_user_user_permissions auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY auth_user_user_permissions
-    ADD CONSTRAINT auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY public.auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: django_admin_log django_admin_log_content_type_id_c4bce8eb_fk_django_co; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY django_admin_log
-    ADD CONSTRAINT django_admin_log_content_type_id_c4bce8eb_fk_django_co FOREIGN KEY (content_type_id) REFERENCES django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY public.django_admin_log
+    ADD CONSTRAINT django_admin_log_content_type_id_c4bce8eb_fk_django_co FOREIGN KEY (content_type_id) REFERENCES public.django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: django_admin_log django_admin_log_user_id_c564eba6_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY django_admin_log
-    ADD CONSTRAINT django_admin_log_user_id_c564eba6_fk FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY public.django_admin_log
+    ADD CONSTRAINT django_admin_log_user_id_c564eba6_fk FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: logus_entrada logus_entrada_fornecedor_id_d751ab11_fk_logus_fornecedor_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY logus_entrada
-    ADD CONSTRAINT logus_entrada_fornecedor_id_d751ab11_fk_logus_fornecedor_id FOREIGN KEY (fornecedor_id) REFERENCES logus_fornecedor(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY public.logus_entrada
+    ADD CONSTRAINT logus_entrada_fornecedor_id_d751ab11_fk_logus_fornecedor_id FOREIGN KEY (fornecedor_id) REFERENCES public.logus_fornecedor(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: logus_familymember logus_familymember_profile_id_8ebfd489_fk_logus_profile_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY logus_familymember
-    ADD CONSTRAINT logus_familymember_profile_id_8ebfd489_fk_logus_profile_id FOREIGN KEY (profile_id) REFERENCES logus_profile(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY public.logus_familymember
+    ADD CONSTRAINT logus_familymember_profile_id_8ebfd489_fk_logus_profile_id FOREIGN KEY (profile_id) REFERENCES public.logus_profile(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: logus_itensentrada logus_itensentrada_entrada_id_c1c8a2c0_fk_logus_entrada_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY logus_itensentrada
-    ADD CONSTRAINT logus_itensentrada_entrada_id_c1c8a2c0_fk_logus_entrada_id FOREIGN KEY (entrada_id) REFERENCES logus_entrada(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY public.logus_itensentrada
+    ADD CONSTRAINT logus_itensentrada_entrada_id_c1c8a2c0_fk_logus_entrada_id FOREIGN KEY (entrada_id) REFERENCES public.logus_entrada(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: logus_itensentrada logus_itensentrada_produto_id_7d70fe53_fk_logus_produto_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY logus_itensentrada
-    ADD CONSTRAINT logus_itensentrada_produto_id_7d70fe53_fk_logus_produto_id FOREIGN KEY (produto_id) REFERENCES logus_produto(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY public.logus_itensentrada
+    ADD CONSTRAINT logus_itensentrada_produto_id_7d70fe53_fk_logus_produto_id FOREIGN KEY (produto_id) REFERENCES public.logus_produto(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
@@ -1700,14 +1697,15 @@ SET default_transaction_read_only = off;
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 10.2 (Debian 10.2-1.pgdg90+1)
--- Dumped by pg_dump version 10.2 (Debian 10.2-1.pgdg90+1)
+-- Dumped from database version 10.3 (Debian 10.3-1.pgdg90+1)
+-- Dumped by pg_dump version 10.3 (Debian 10.3-1.pgdg90+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 SET row_security = off;

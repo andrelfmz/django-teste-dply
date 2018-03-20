@@ -8,6 +8,6 @@ mkdir /tmp/mycompose;
 cd /tmp/mycompose;
 git clone https://github.com/andrelfmz/django-teste-dply.git .;
 docker-compose up -d;
-sleep 40;
+sleep 20;
 cat ./dados_bkp/dump_bkp_sql.sql | docker exec -i logus-db-container psql -Upostgres
 echo 1 > /tmp/mycompose/done

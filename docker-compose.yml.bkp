@@ -1,0 +1,25 @@
+version: '3.1'
+
+services:
+
+  web:
+    build: .
+    command: bash -c 'python manage.py collectstatic --noinput && gunicorn logusweb.wsgi -b 0.0.0.0:8000 -w 3'
+    #command: bash -c 'python manage.py makemigrations --noinput && python manage.py migrate --noinput && python manage.py runserver 0.0.0.0:8000 --insecure'
+    volumes:
+      - ./codigo:/code
+    ports:
+      - "8000:8000"
+    links:
+      - db
+    depends_on:
+      - db
+
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: example
+      PGDATA: /dados
+    volumes:
+      - ./dados:/dados
+
