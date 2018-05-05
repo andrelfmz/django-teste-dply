@@ -1,9 +1,9 @@
 # django-teste-dply
 
-<p> ip_server:8000 </p>
+<p> ip_server:8000 (Aguardar 10 minutos)</p>
 <p> admin/master123 </p>
 
-# user-data (dply)
+# user-data (dply - Ubuntu 16.04)
 
 	#!/bin/sh
 	export DEBIAN_FRONTEND=noninteractive;
