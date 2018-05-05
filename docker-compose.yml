@@ -10,12 +10,12 @@ services:
     volumes:
       - ./nginx:/etc/nginx/conf.d
     links:
-      - web
+      - appweb
     depends_on:
-      - web
+      - appweb
 
-  web:
-    container_name: logus-web-container
+  appweb:
+    container_name: logus-appweb-container
     build: .
 
     # Utilizando Gunicorn
