@@ -2,6 +2,18 @@ version: '3.1'
 
 services:
 
+  proxy:
+    container_name: logus-proxy-container
+    image: nginx:latest
+    ports:
+      - "80:8000"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+    links:
+      - web
+    depends_on:
+      - web
+
   web:
     container_name: logus-web-container
     build: .
@@ -15,8 +27,8 @@ services:
     
     volumes:
       - ./codigo:/code
-    ports:
-      - "8000:8000"
+    expose:
+      - "8000"
     links:
       - db
     depends_on:
