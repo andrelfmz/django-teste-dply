@@ -10,8 +10,8 @@ from rest_framework.routers import DefaultRouter
 from django.contrib.auth import views as auth_views
 
 router = DefaultRouter()
-router.register(r'fornecedores',FornecedorViewSet)
-router.register(r'entradas',EntradaViewSet)
+router.register(r'fornecedores', FornecedorViewSet)
+router.register(r'entradas', EntradaViewSet)
 
 
 urlpatterns = [
@@ -49,6 +49,8 @@ urlpatterns = [
     #Fornecedores    
     url(r'^api/fornecedores/$', views.APIFornecedorList.as_view()),
     url(r'^api/fornecedores/(?P<pk>[0-9]+)/$', views.APIFornecedorDetail.as_view()),
+
+    #API's Datatables
     url(r'^api2/', include(router.urls)),
  
 ]

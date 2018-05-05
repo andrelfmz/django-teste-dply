@@ -152,4 +152,4 @@ def query_entradas_by_args(**kwargs):
         'count': count,
         'total': total,
         'draw': draw
-    }
+    }    

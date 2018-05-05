@@ -5,9 +5,14 @@ services:
   web:
     container_name: logus-web-container
     build: .
-    command: bash -c 'python manage.py collectstatic --noinput && gunicorn logusweb.wsgi -b 0.0.0.0:8000 -w 3'
+
+    # Utilizando Gunicorn
+    command: bash -c 'python manage.py collectstatic --noinput && gunicorn logusweb.wsgi -b 0.0.0.0:8000 -w 3' # Modo Producao (S/ Reload)
+    #command: bash -c 'python manage.py collectstatic --noinput && gunicorn logusweb.wsgi -b 0.0.0.0:8000 -w 3 --reload' # Modo Desenvolvimento
+
+    # Sem Gunicorn
     #command: bash -c 'python manage.py makemigrations --noinput && python manage.py migrate --noinput && python manage.py runserver 0.0.0.0:8000 --insecure'
-    #command: bash -c 'python manage.py makemigrations --noinput && python manage.py migrate --noinput && gunicorn logusweb.wsgi -b 0.0.0.0:8000 -w 3'
+    
     volumes:
       - ./codigo:/code
     ports:

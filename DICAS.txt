@@ -30,3 +30,21 @@ docker exec -t -u postgres your-db-container pg_dumpall -c > dump_`date +%d-%m-%
 
 Restore:
 cat your_dump.sql | docker exec -i your-db-container psql -Upostgres
+
+
+# GITHUB
+
+  * Configuracao inicial:
+    - git init
+    - git ????
+
+  * Manutencao:
+    - git add arquivo     OU      git add .     (para todos)
+      - git rm arquivo 
+    - git commit -m 'meu commit'
+    - git push origin master
+
+
+# POPULAR BANCO DE DADOS POSTGRES (ADMINER)
+  -INSERT INTO logus_fornecedor (nome,email,fone1,fone2,tipo,data_pub)
+VALUES ('Fornecedor '||generate_series(1,1000000),'1','1','1','J',current_timestamp);
