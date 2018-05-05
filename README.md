@@ -1,6 +1,6 @@
 # django-teste-dply
 
-<p> ip_server:8000 (Aguardar 10 minutos)</p>
+<p> ip_server ...(Aguardar 10 minutos)</p>
 <p> admin/master123 </p>
 
 # user-data (dply - Ubuntu 16.04)
