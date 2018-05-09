@@ -6,9 +6,11 @@ services:
     container_name: logus-proxy-container
     image: nginx:latest
     ports:
-      - "80:8000"
+      - "80:80"
+      - "443:443"
     volumes:
       - ./nginx:/etc/nginx/conf.d
+      - ./ssl:/etc/nginx/ssl
     links:
       - appweb
     depends_on:
