@@ -65,7 +65,7 @@ class Produto(models.Model):
 
 
 class Entrada(models.Model):
-    fornecedor = models.ForeignKey(Fornecedor,on_delete=models.CASCADE,related_name='fornecedores')
+    fornecedor = models.ForeignKey(Fornecedor,on_delete=models.SET_NULL,related_name='fornecedores')
     #data = models.DateField(default=datetime.datetime.now())
     data = models.DateField(default=timezone.now, blank=True)
     valortotal = models.DecimalField('Valor total',max_digits=10,decimal_places=2,default=0)
@@ -107,12 +107,15 @@ class Entrada(models.Model):
 
 
 class ItensEntrada(models.Model):
-    entrada = models.ForeignKey(Entrada,on_delete=models.CASCADE,)
-    produto = models.ForeignKey(Produto,on_delete=models.CASCADE,)
+    entrada = models.ForeignKey(Entrada,on_delete=models.SET_NULL,)
+    produto = models.ForeignKey(Produto,on_delete=models.SET_NULL,)
     quantidade = models.DecimalField(max_digits=10,decimal_places=3,default=0.000)
     valoru = models.DecimalField('Valor Unitário',max_digits=10,decimal_places=2,default=0.00)
     valort = models.DecimalField('Subtotal',max_digits=10,decimal_places=2,default=0.00)    
     
+    class Meta:
+        verbose_name = 'item'
+        verbose_name_plural = 'itens'
 
     ##@property
     ##def get_valort(self):
